@@ -14,6 +14,15 @@
       </Box>
       <MovieList v-else :movies="onFilterHandler(onSearchHandler(movies, term), filter)" @onToggle="onToggleHandler"
         @onRemove="onRemoveHandler" />
+      <Box class="d-flex justify-content-center">
+        <nav aria-label="pagination">
+          <ul class="pagination">
+            <li v-for="pageNumber in totalPages" class="page-item" aria-current="page" :class="{'active': pageNumber == page}" :key="pageNumber" @click="pageChangeHandler(pageNumber)">
+              <span class="page-link">{{ pageNumber }}</span>
+            </li>
+          </ul>
+        </nav>
+      </Box>
       <MovieAddForm @createMovie="createMovie" />
     </div>
   </div>
@@ -43,6 +52,9 @@ export default {
       term: '',
       filter: 'all',
       isLoading: false, // state - holat
+      limit: 10,
+      page: 1,
+      totalPages: 0
     }
   },
   methods: {
@@ -86,24 +98,40 @@ export default {
     async fetchMovie() {
       try {
         this.isLoading = true
-        const { data } = await axios.get('https://jsonplaceholder.typicode.com/posts')
-        const newArr = data.map(item => ({
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+          params: {
+            _limit: this.limit,
+            _page: this.page
+          }
+        })
+        const newArr = response.data.map(item => ({
           id: item.id,
           name: item.title,
           like: false,
           favourite: false,
           viewers: Math.floor(Math.random() * 1000)
         }))
+        this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
         this.movies = newArr
+        console.log(this.totalPages);
       } catch (error) {
         alert(error.message)
       } finally {
         this.isLoading = false
       }
     },
+    pageChangeHandler(page) {
+      this.page = page
+      this.fetchMovie()
+    },
   },
   mounted() {
     this.fetchMovie()
+  },
+  watch: {
+    page() {
+      this.fetchMovie()
+    }
   }
 }
 </script>
