@@ -6,7 +6,7 @@
         <SearchPanel />
         <AppFilter />
       </div>
-      <MovieList :movies="movies" @onLike="onLikeHandler"/>
+      <MovieList :movies="movies" @onToggle="onToggleHandler" @onRemove="onRemoveHandler"/>
       <MovieAddForm @createMovie="createMovie"/>
     </div>
   </div>
@@ -60,14 +60,17 @@ export default {
       createMovie(item) {
         this.movies.push(item)
       },
-      onLikeHandler(id) {
-        const arr = this.movies.map(item => {
+      onToggleHandler({id, prop}) {
+        this.movies = this.movies.map(item => {
           if(item.id == id) {
-            item.like = !item.like
+            return {...item, [prop]: !item[prop]}
           }
           return item 
         })
       },
+      onRemoveHandler(id) {
+        this.movies = this.movies.filter(c => c.id !== id)
+      }
     }
 }
 </script>
