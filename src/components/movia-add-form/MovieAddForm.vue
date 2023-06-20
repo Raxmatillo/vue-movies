@@ -2,36 +2,38 @@
     <div class="movie-add-form">
         <h3>Yangi kino qo'shish</h3>
         <form class="add-form d-flex" @submit.prevent>
-            <input 
-            type="text" 
-            class="form-control new-movie-label" 
-            placeholder="Qanday kino ?" 
-            :value="name"
-            @input="name = $event.target.value "
+            <Input 
+                class="new-movie-label"
+                placeholder="Qanday kino ?" 
+                v-model="name"
             />
-            <input 
-            type="number" 
-            class="form-control new-movie-label" 
-            placeholder="Nechi marotaba ko'rilgan ?" 
-            :value="viewers"
-            @input="viewers=$event.target.value"
+            <Input 
+                type="number"
+                class="new-movie-label"
+                placeholder="Nechi marotaba ko'rilgan ?" 
+                v-model="viewers"
             />
 
-            <button type="submit" class="btn btn-outline-dark" @click="addMovie">
+            <PrimaryButton type="submit" class="btn-outline-dark" @click="addMovie">
                 Qo'shish
-            </button>
+            </PrimaryButton>
         </form>
     </div>
 </template>
 
 <script>
+import PrimaryButton from "@/ui-components/PrimaryButton.vue";
+
 export default {
     data() {
         return {
             name: '',
             viewers: '',
         }
-    }, 
+    },
+    components: {
+        PrimaryButton,
+    },
     methods: {
         addMovie() {
             if(!this.movie || !this.viewers) return
