@@ -36,7 +36,7 @@ export default {
     },
     methods: {
         addMovie() {
-            if(!this.movie || !this.viewers) return
+            if(!this.name || !this.viewers) return
             const newMovie = {
                 name: this.name,
                 viewers: this.viewers,
@@ -44,6 +44,7 @@ export default {
                 like: false,
                 id: Date.now(),
             }
+            console.log(newMovie);
             this.$emit('createMovie', newMovie)
             this.name = "",
             this.viewers = ""
